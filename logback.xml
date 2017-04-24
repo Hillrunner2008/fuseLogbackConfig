@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60 seconds">
+
+  <!-- FYI, this appender relays logs to Karaf log:display. Also note, log:set commands will only work with logging-service backend, not logback. -->
+  <appender name="OSGI" class="org.ops4j.pax.logging.logback.appender.PaxAppenderDelegate" />
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %d{dd-MM-yyyy HH:mm:ss} [%thread] %-5level (%file:%line\) - %message%n
+      </pattern>
+    </encoder>
+  </appender>
+
+      <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${karaf.data}/log/karaf.log</File>
+        <Append>true</Append>
+        <encoder>
+          <pattern>%d{ISO8601} | %-5.5p | %-16.16t | %X{bundle.id} - %X{bundle.name} - %X{bundle.version} | %m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+          <fileNamePattern>${karaf.data}/log/karaf.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+          <maxHistory>60</maxHistory>
+        </rollingPolicy>
+      </appender>
+
+  <root level="INFO">
+    <appender-ref ref="FILE" />
+    <appender-ref ref="OSGI" />
+  </root>
+</configuration>
